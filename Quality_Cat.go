@@ -17,12 +17,8 @@ func QC(datahandle *string, qc_number byte, c chan [6]int) {
 	GC := 0
 	N := 0
 	totalbase := 0
-	rawIO, f_err := os.Open(*datahandle)
-	if f_err != nil {
-		panic("File open Error!!!")
 
-	}
-	dataIO := lpp.GetBlockRead(rawIO, "\n", false, 10000000)
+	dataIO := lpp.GetBlockRead(*datahandle, "\n", false, 10000000)
 	for {
 
 		line, err := dataIO.Next()

@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-func QC(datahandle *os.File, qc_number byte) [6]int {
+func QC(datahandle string, qc_number byte) [6]int {
 	l := 0
 	Q20 := 0
 	Q30 := 0
@@ -74,7 +74,7 @@ func main() {
 	GC := 0
 	N := 0
 	totalbase := 0
-	data1 := QC(os.Stdin, qc_number)
+	data1 := QC("", qc_number)
 
 	l = data1[0]
 	totalbase = data1[1]

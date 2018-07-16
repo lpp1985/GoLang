@@ -36,7 +36,7 @@ func main() {
 	OUT, _ := os.Create(*output)
 
 	all_depth := []int{}
-	DATABLOCK := lpp.GetBlockRead(os.Stdin, "\n", false, 1000)
+	DATABLOCK := lpp.GetBlockRead("", "\n", false, 1000)
 	//	kmer_spieces := make(map[int]float64)
 	k_freq := make(map[int]int)
 	kmer_individual := make(map[int]int)

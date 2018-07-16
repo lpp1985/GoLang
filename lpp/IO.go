@@ -52,9 +52,14 @@ func GetBlockRead(filehandle string, blocktag string, header bool, buffer int) I
 	BR := new(Block_Reading)
 	BR.Blocktag = blocktag
 	BR.Buffer = buffer
-	FILE, errfile := os.Open(filehandle)
-	if errfile != nil {
-		panic(filehandle + " Is not Exist!!")
+	FILE := os.Stdin
+	if filehandle != "" {
+
+		c_FILE, errfile := os.Open(filehandle)
+		if errfile != nil {
+			panic(filehandle + " Is not Exist!!")
+		}
+		FILE = c_FILE
 	}
 	BR.File = FILE
 	Result_IO := BR.Read()

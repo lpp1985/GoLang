@@ -22,18 +22,14 @@ func main() {
 
 	OUTPUTHANDLE, err := os.Create(*output)
 	defer OUTPUTHANDLE.Close()
-	OUTPUTBUF := bufio.NewWriterSize(OUTPUTHANDLE, 100000)
+	OUTPUTBUF := bufio.NewWriterSize(OUTPUTHANDLE, 10000)
 	OUTPUTBUF.WriteString("Name\tLength\n")
 	defer OUTPUTBUF.Flush()
 	if err != nil {
 		panic("Output not Exist!!")
 	}
-	FASTAHANDLE, err := os.Open(*fasta)
-	defer FASTAHANDLE.Close()
-	if err != nil {
-		panic("Fasta not Exist")
-	}
-	FASTAIO := lpp.GetBlockRead(FASTAHANDLE, "\n>", false, 10000000)
+
+	FASTAIO := lpp.GetBlockRead(*fasta, "\n>", false, 10000000)
 	for {
 		line, err := FASTAIO.Next()
 
@@ -43,7 +39,12 @@ func main() {
 		seq := bytes.SplitN(line, []byte("\n"), 2)[1]
 		seq = bytes.Replace(seq, []byte("\n"), []byte(""), -1)
 		length := len(seq)
-		OUTPUTBUF.WriteString(fmt.Sprintf("%s\t%d\n", name, length))
+
+		output_byte := name
+		output_byte = append(output_byte, []byte("\t")...)
+		output_byte = append(output_byte, []byte(string(length))...)
+		output_byte = append(output_byte, []byte("\n")...)
+		OUTPUTBUF.Write(output_byte)
 		if err != nil {
 			break
 		}

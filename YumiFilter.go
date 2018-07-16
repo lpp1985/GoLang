@@ -4,11 +4,11 @@ import (
 	"bufio"
 	//	"bytes"
 	"flag"
-	"fmt"
+	"runtime"
+		"fmt"
 	"lpp"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"sync"
 )
@@ -17,7 +17,6 @@ func Filter(f1 string, outputdir *string) {
 
 	seq_hash := make(map[string]string)
 	f2 := strings.Replace(f1, ".R1.", ".R2.", -1)
-
 	FQ1IO := lpp.GetBlockRead(f1, "\n", false, 10000000)
 
 	FQ2IO := lpp.GetBlockRead(f2, "\n", false, 10000000)
