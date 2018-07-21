@@ -21,9 +21,7 @@ func (file *File_Ddict) Read(key int, value int) map[string]map[string]string {
 	for {
 
 		line, err := file.File_IO.Next()
-		if err != nil {
-			break
-		}
+
 		line_l := bytes.Split(bytes.TrimSpace(line), []byte("\t"))
 
 		if len(line_l) >= sort.IntSlice([]int{key, value})[0] {
@@ -36,6 +34,9 @@ func (file *File_Ddict) Read(key int, value int) map[string]map[string]string {
 
 			}
 			result_hash[key_string][value_string] = ""
+		}
+		if err != nil {
+			break
 		}
 
 	}
@@ -58,9 +59,7 @@ func (file *File_dict) Read(key int, value int) map[string]string {
 	for {
 
 		line, err := file.File_IO.Next()
-		if err != nil {
-			break
-		}
+
 		line_l := bytes.Split(bytes.TrimSpace(line), []byte("\t"))
 		if len(line_l) > sort.IntSlice([]int{key, value})[0] {
 			key_string := string(line_l[key])
@@ -68,7 +67,9 @@ func (file *File_dict) Read(key int, value int) map[string]string {
 			result_hash[key_string] = value_string
 
 		}
-
+		if err != nil {
+			break
+		}
 	}
 	return result_hash
 }

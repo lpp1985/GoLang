@@ -5,7 +5,7 @@ import (
 	"bufio"
 	"bytes"
 	"flag"
-//	"fmt"
+	
 	"lpp"
 	"os"
 	"strconv"
@@ -39,7 +39,7 @@ func main() {
 		open Fasta Input
 
 	*/
-	seqIO:= lpp.GetBlockRead(*fasta, "\n>", false, 100000000)
+	seqIO := lpp.Fasta{File: *fasta}
 
 	/*
 		Prepeare Data Input Database
@@ -77,8 +77,7 @@ func main() {
 
 	for {
 		//fmt.Println(i)
-		line, err := seqIO.Next()
-		line = bytes.TrimSuffix(line, []byte(">"))
+		title, sequence, err := seqIO.Next()
 
 		var ok bool = false
 		if *seq_number {
@@ -91,10 +90,11 @@ func main() {
 
 		} else {
 
-			name := bytes.SplitN(line, []byte("\n"), 2)[0]
-			name = bytes.Fields(name)[0]
-			//			fmt.Println(string(name))
+			name := bytes.Fields(title)[0][1:]
+
+
 			_, has := need_hash[string(name)]
+
 			ok = has
 			if *exclude {
 				ok = !has
@@ -102,9 +102,9 @@ func main() {
 
 		}
 		if ok {
-			//			fmt.Println(i)
-			line = append([]byte(">"), line...)
-			BufResult.Write(line)
+
+			BufResult.Write(title)
+			BufResult.Write(sequence)
 
 		}
 		if err != nil {

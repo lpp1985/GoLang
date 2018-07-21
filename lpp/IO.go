@@ -20,6 +20,16 @@ type IO struct {
 	SplitTag byte
 }
 
+func GetOuput(name string, buffer int) (*os.File, error) {
+
+	OUTPUTHANDLE, err := os.Create(name)
+
+	OUTPUTIO := bufio.NewWriterSize(OUTPUTHANDLE, buffer)
+	defer OUTPUTIO.Flush()
+
+	return OUTPUTHANDLE, err
+}
+
 /*
 使用说明
 FQ2HANDLE, errfq2 := os.Open(*fastq1)
@@ -47,6 +57,46 @@ func (blockreading *Block_Reading) Read() IO {
 
 	return BlockIO
 
+}
+
+type Fasta struct {
+	File string
+	IO   IO
+}
+
+//func (fa *Fasta) Read() *Fasta {
+//	FastaIO := GetBlockRead(fa.File, "\n>", false, 10000000)
+//	fa.IO = FastaIO
+
+//	return fa
+//}
+
+func (SeqFile *Fasta) Next() (name []byte, seq []byte, err error) {
+	if SeqFile.File == "" {
+		SeqFile.IO = GetBlockRead("", "\n>", false, 10000000)
+	} else {
+
+		if SeqFile.IO.BlockTag == nil {
+
+			SeqFile.IO = GetBlockRead(SeqFile.File, "\n>", false, 10000000)
+
+		}
+	}
+	Data_block, err := SeqFile.IO.Next()
+
+	var faname, faseq []byte
+
+	Data_block = bytes.TrimSuffix(Data_block, []byte(">"))
+	if string(Data_block[0]) != ">" {
+
+		Data_block = append([]byte(">"), Data_block...)
+	}
+
+	Data_list := bytes.SplitN(Data_block, []byte("\n"), 2)
+	faname = append(Data_list[0], '\n')
+	faseq = Data_list[1]
+
+	return faname, faseq, err
 }
 func GetBlockRead(filehandle string, blocktag string, header bool, buffer int) IO {
 	BR := new(Block_Reading)
