@@ -42,7 +42,7 @@ func main() {
 			}
 		}
 	}()
-	file := flag.String("i", "", "input Fasta!")
+	file := flag.String("i", "", "input Taxon.dump!")
 	taxon := flag.String("n", "", "Taxon Number!")
 	output := flag.String("o", "", "Output!")
 	flag.Parse()

@@ -42,15 +42,15 @@ to quickly create a Cobra application.`,
 		 */
 		fasta := getFlagString(cmd, "fasta")
 
-		output := getFlagString(cmd, "o")
-		database := getFlagString(cmd, "d")
+		output := getFlagString(cmd, "output")
+		database := getFlagString(cmd, "list")
 
-		listnumber := getFlagInt(cmd, "n")
+		listnumber := getFlagInt(cmd, "number")
 
-		seq_number := getFlagBool(cmd, "c")
-		header := getFlagBool(cmd, "j")
-		start := getFlagBool(cmd, "s")
-		exclude := getFlagBool(cmd, "e")
+		seq_number := getFlagBool(cmd, "order")
+		header := getFlagBool(cmd, "header")
+		start := getFlagBool(cmd, "start")
+		exclude := getFlagBool(cmd, "exclude")
 
 		//	defer func() {
 		//		if err := recover(); err != nil {
@@ -153,16 +153,16 @@ func init() {
 	 */
 	GetSeqCmd.PersistentFlags().StringP("fasta", "f", "", "Fasta Input")
 
-	GetSeqCmd.PersistentFlags().String("o", "", "Fasta Output")
-	GetSeqCmd.MarkFlagRequired("o")
-	GetSeqCmd.PersistentFlags().String("d", "", "Need List")
-	GetSeqCmd.MarkFlagRequired("d")
-	GetSeqCmd.PersistentFlags().Int("n", 1, "List Number")
-	GetSeqCmd.MarkFlagRequired("n")
-	GetSeqCmd.PersistentFlags().Bool("c", false, "Extract Seq from Order")
-	GetSeqCmd.PersistentFlags().Bool("j", false, "Databse has Header")
-	GetSeqCmd.PersistentFlags().Bool("s", false, "Sequence Number start from 1")
-	GetSeqCmd.PersistentFlags().Bool("e", false, "Exclude Data from List")
+	GetSeqCmd.PersistentFlags().StringP("output", "o", "", "Fasta Output")
+	GetSeqCmd.MarkFlagRequired("output")
+	GetSeqCmd.PersistentFlags().StringP("list", "d", "", "Need List")
+	GetSeqCmd.MarkFlagRequired("list")
+	GetSeqCmd.PersistentFlags().IntP("number", "n", 1, "List Number")
+	GetSeqCmd.MarkFlagRequired("number")
+	GetSeqCmd.PersistentFlags().BoolP("order", "c", false, "Extract Seq from Order")
+	GetSeqCmd.PersistentFlags().BoolP("header", "j", false, "Databse has Header")
+	GetSeqCmd.PersistentFlags().BoolP("start", "s", false, "Sequence Number start from 1")
+	GetSeqCmd.PersistentFlags().BoolP("exclude", "e", false, "Exclude Data from List")
 
 	// Here you will define your flags and configuration settings.
 

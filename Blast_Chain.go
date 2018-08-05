@@ -20,8 +20,10 @@ type ALNResult struct {
 
 func main() {
 	FASTAIO := lpp.GetBlockRead(os.Args[1], "\n>", false, 10000000)
+	threshold, _ := strconv.ParseFloat(os.Args[2], 32)
 	contig_length := make(map[string]int)
-	fmt.Println("Contig\tReference_Start\tReference_End\tRef_length\tContig_length\tContig")
+	fmt.Println("Reference\tReference_Start\tReference_End\tContig_from\tContig_end\tRef_length\tContig_length\tContig\tDirection\tAlignLength")
+
 	for {
 		line, err := FASTAIO.Next()
 		if err != nil {
@@ -139,7 +141,7 @@ func main() {
 	FINAL_Result := make(map[string]map[string]string)
 	for key, value := range ALN_Result {
 		perc := value.Perc
-		if perc > 0.7 || value.Length > 100000 {
+		if perc >= threshold {
 			ref := value.Reference
 			_, ok := FINAL_Result[ref]
 			if !ok {
@@ -147,17 +149,17 @@ func main() {
 			}
 			coord_list := []int{value.Ref_list[0], value.Ref_list[1]}
 			sort.Ints(coord_list)
-			data := fmt.Sprintf("%d\t%d\t%d\t%d\t", coord_list[0], coord_list[1], contig_length[ref], contig_length[key])
+			data := fmt.Sprintf("%d\t%d\t%d\t%d\t%d\t%d\t", coord_list[0], coord_list[1], value.Aln_list[0], value.Aln_list[1], contig_length[ref], contig_length[key])
 			if value.Ref_list[0] > value.Ref_list[1] {
 				value.Direct = "-"
 			}
-			FINAL_Result[ref][data] = key + "\t" + value.Direct
+			FINAL_Result[ref][data] = key + "\t" + value.Direct + "\t" + fmt.Sprintf("%d", value.Length)
 		}
 
 	}
 	for key, value := range FINAL_Result {
 		for ctg, coord := range value {
-			fmt.Println(key+"\t"+ ctg+coord)
+			fmt.Println(key + "\t" + ctg + "\t" + coord)
 		}
 
 	}

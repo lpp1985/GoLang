@@ -75,19 +75,14 @@ func QC(datahandle *string, qc_number byte, c chan [6]int) {
 // QualityCatCmd represents the QualityCat command
 var QualityCatCmd = &cobra.Command{
 	Use:   "QualityCat",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Staistics quality score for a fastq file!!",
+	Long:  `Staistics quality score for a fastq file!!`,
 	Run: func(cmd *cobra.Command, args []string) {
 		result_channel := make(chan [6]int)
 		read1 := getFlagString(cmd, "1")
 		read2 := getFlagString(cmd, "2")
-		output := getFlagString(cmd, "o")
-		quality := getFlagInt(cmd, "n")
+		output := getFlagString(cmd, "output")
+		quality := getFlagInt(cmd, "number")
 		qc_number := byte(*quality)
 
 		l := 0
@@ -136,10 +131,10 @@ func init() {
 
 	/* Get Option Parser
 	 */
-	QualityCatCmd.PersistentFlags().String("1", "", "Read1")
-	QualityCatCmd.PersistentFlags().String("2", "", "Read2")
-	QualityCatCmd.PersistentFlags().String("o", "", "Output")
-	QualityCatCmd.MarkFlagRequired("o")
-	QualityCatCmd.PersistentFlags().Int("n", 33, "Qualit Score")
+	QualityCatCmd.PersistentFlags().StringP("1", "1", "", "Read1")
+	QualityCatCmd.PersistentFlags().StringP("2", "2", "", "Read2")
+	QualityCatCmd.PersistentFlags().StringP("output", "o", "", "Output")
+	QualityCatCmd.MarkFlagRequired("output")
+	QualityCatCmd.PersistentFlags().IntP("number", "n", 33, "Qualit Score")
 
 }

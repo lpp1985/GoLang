@@ -5,7 +5,7 @@ import (
 	"bufio"
 	"bytes"
 	"flag"
-	
+	"fmt"
 	"lpp"
 	"os"
 	"strconv"
@@ -26,6 +26,11 @@ func main() {
 	start := flag.Bool("s", false, "Sequence Number start from 1")
 	exclude := flag.Bool("e", false, "Exclude Data from List")
 	flag.Parse()
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+		}
+	}()
 	/* Generate Output
 	 */
 	Result_File, err := os.Create(*output)
@@ -92,7 +97,6 @@ func main() {
 
 			name := bytes.Fields(title)[0][1:]
 
-
 			_, has := need_hash[string(name)]
 
 			ok = has
@@ -113,11 +117,5 @@ func main() {
 		i++
 
 	}
-
-	//	defer func(){
-	//		if err:= recover(); err!=nil{
-	//			fmt.Println(err)
-	//		}
-	//	}
 
 }
