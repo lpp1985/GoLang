@@ -59,6 +59,31 @@ func (blockreading *Block_Reading) Read() IO {
 
 }
 
+type Fastq struct {
+	File string
+	IO   IO
+}
+
+func (SeqFile *Fastq) Next() (name []byte, seq []byte, name2 []byte, qual []byte, err error) {
+	if SeqFile.File == "" {
+		SeqFile.IO = GetBlockRead("", "\n>", false, 10000000)
+	} else {
+
+		if SeqFile.IO.BlockTag == nil {
+
+			SeqFile.IO = GetBlockRead(SeqFile.File, "\n", false, 10000000)
+
+		}
+	}
+
+	name, err = SeqFile.IO.Next()
+	seq, err = SeqFile.IO.Next()
+	name2, err = SeqFile.IO.Next()
+	qual, err = SeqFile.IO.Next()
+	return name, seq, name2, qual, err
+
+}
+
 type Fasta struct {
 	File string
 	IO   IO
@@ -84,8 +109,6 @@ func (SeqFile *Fasta) Next() (name []byte, seq []byte, err error) {
 	}
 	Data_block, err := SeqFile.IO.Next()
 
-	var faname, faseq []byte
-
 	Data_block = bytes.TrimSuffix(Data_block, []byte(">"))
 	if string(Data_block[0]) != ">" {
 
@@ -93,10 +116,10 @@ func (SeqFile *Fasta) Next() (name []byte, seq []byte, err error) {
 	}
 
 	Data_list := bytes.SplitN(Data_block, []byte("\n"), 2)
-	faname = append(Data_list[0], '\n')
-	faseq = Data_list[1]
+	name = append(Data_list[0], '\n')
+	seq = Data_list[1]
 
-	return faname, faseq, err
+	return name, seq, err
 }
 func GetBlockRead(filehandle string, blocktag string, header bool, buffer int) IO {
 	BR := new(Block_Reading)

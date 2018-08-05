@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"lpp"
 	"os"
+	"sort"
 	"strconv"
 )
 
@@ -18,8 +19,9 @@ type ALNResult struct {
 }
 
 func main() {
-	FASTAIO := lpp.GetBlockRead( os.Args[1], "\n>", false, 10000000)
+	FASTAIO := lpp.GetBlockRead(os.Args[1], "\n>", false, 10000000)
 	contig_length := make(map[string]int)
+	fmt.Println("Contig\tReference_Start\tReference_End\tRef_length\tContig_length\tContig")
 	for {
 		line, err := FASTAIO.Next()
 		if err != nil {
@@ -134,22 +136,28 @@ func main() {
 	}
 	//	align, _, length := lpp.COORD_CHAIN(align_hash["NC_036627.1"]["tig00000009"], ref_hash["NC_036627.1"]["tig00000009"], 1)
 	//fmt.Println(align_hash["NC_036622.1"]["tig00000001"])
-	FINAL_Result := make(map[string]map[int]string)
+	FINAL_Result := make(map[string]map[string]string)
 	for key, value := range ALN_Result {
 		perc := value.Perc
 		if perc > 0.7 || value.Length > 100000 {
 			ref := value.Reference
 			_, ok := FINAL_Result[ref]
 			if !ok {
-				FINAL_Result[ref] = make(map[int]string)
+				FINAL_Result[ref] = make(map[string]string)
 			}
-			FINAL_Result[ref][value.Ref_list[0]] = key + value.Direct
+			coord_list := []int{value.Ref_list[0], value.Ref_list[1]}
+			sort.Ints(coord_list)
+			data := fmt.Sprintf("%d\t%d\t%d\t%d\t", coord_list[0], coord_list[1], contig_length[ref], contig_length[key])
+			if value.Ref_list[0] > value.Ref_list[1] {
+				value.Direct = "-"
+			}
+			FINAL_Result[ref][data] = key + "\t" + value.Direct
 		}
 
 	}
 	for key, value := range FINAL_Result {
 		for ctg, coord := range value {
-			fmt.Println(key, ctg, coord)
+			fmt.Println(key+"\t"+ ctg+coord)
 		}
 
 	}
