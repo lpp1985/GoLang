@@ -1,29 +1,38 @@
 package main
 
 import (
-	//	"bytes"
+	"bytes"
+	"flag"
 	"fmt"
+
+	//"fmt"
 	"lpp"
-	"os"
 )
 
 func main() {
-	FASTQ := lpp.Fastq{File: os.Args[1]}
 
-	//	if FASTA.IO.BlockTag == nil {
-	//		fmt.Println("Blank!!")
-	//	}
+	input := flag.String("i", "./", "Input File")
 
+	flag.Parse()
+	raw_file := lpp.GetBlockRead(*input, "\n", false, 10000)
+	var All_list []string
 	for {
-		name, seq, name2, qual, err := FASTQ.Next()
-		fmt.Println(string(name[len(name)-1]))
-		fmt.Println(string(seq[len(seq)-1]))
-
-		fmt.Println(string(name2[len(name2)-1]))
-		fmt.Println(string(qual[len(qual)-1]))
+		line, err := raw_file.Next()
+		line = bytes.TrimSpace(line)
+		All_list = append(All_list, string(line))
+		fmt.Println(string(line))
 		if err != nil {
 			break
 		}
 
+	}
+	RAW := lpp.Fasta{File: *input}
+	for {
+		title, _, err := RAW.Next()
+
+		fmt.Println(string(title))
+		if err != nil {
+			break
+		}
 	}
 }
